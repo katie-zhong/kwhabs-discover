@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Events For You — KW Habilitation</title>
+<style>
+  :root{
+    --ink:#1c1c1c;
+    --bg:#ffffff;
+    --surface:#e9e9e9;
+    --navbar:#1487ab;
+    --brand-cyan:#0f7c9e;
+    --pink:#d6246e;
+    --pink-press:#ab1c58;
+    --chip-arts:#7c3aed;
+    --chip-food:#2f7d32;
+    --chip-music:#0f766e;
+    --chip-games:#b45309;
+    --chip-sports:#1d4ed8;
+    --chip-other:#57534e;
+    --focus:#ffb700;
+    --hl:#ffe27a;
+    --radius:14px;
+  }
+  .hc{
+    --ink:#ffffff; --bg:#000000; --surface:#1a1a1a; --navbar:#000000;
+    --brand-cyan:#ffe600; --pink:#ffe600; --pink-press:#ccb800;
+    --chip-arts:#ffe600; --chip-food:#ffe600; --chip-music:#ffe600;
+    --chip-games:#ffe600; --chip-sports:#ffe600; --chip-other:#ffe600;
+    --hl:#ffe600;
+  }
+  .hc .chip, .hc .tag, .hc .btn-register, .hc .pill{ color:#000 !important; }
+  .hc .navbar{ border-bottom:2px solid #fff; }
+  .hc .reading{ color:#000 !important; }
+
+  *{ box-sizing:border-box; margin:0; }
+  html{ font-size:106%; }
+  body{
+    font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.45;
+  }
+  button{ font:inherit; cursor:pointer; }
+  :focus-visible{ outline:4px solid var(--focus); outline-offset:2px; border-radius:8px; }
+  .visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+
+  /* ---------- site header ---------- */
+  .navbar{
+    background:var(--navbar); color:#fff;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 18px; gap:10px; flex-wrap:wrap;
+  }
+  .navlinks{ display:flex; gap:20px; flex-wrap:wrap; list-style:none; padding:0; }
+  .navlinks a{ color:#fff; text-decoration:none; font-size:0.78rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:6px 2px; }
+  .navlinks a:hover{ text-decoration:underline; }
+  .socials{ display:flex; gap:12px; font-size:1rem; }
+  .socials a{ color:#fff; text-decoration:none; }
+  .masthead{
+    max-width:980px; margin:0 auto; padding:16px 18px 0;
+    display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .logo img{ height:64px; width:auto; }
+  .logo-fallback{ display:none; align-items:baseline; gap:4px; }
+  .logo-txt{ font-size:1.7rem; font-weight:800; color:#1487ab; letter-spacing:-0.02em; }
+  .hc .logo-txt{ color:#ffe600; }
+  .pills{ display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+  .pill{ background:var(--pink); color:#fff; border:none; border-radius:999px; padding:9px 18px; font-size:0.82rem; font-weight:700; min-height:40px; }
+
+  .page{ max-width:980px; margin:0 auto; padding:8px 18px 48px; }
+  h1{ font-size:2.1rem; font-weight:800; letter-spacing:-0.02em; margin:14px 0 8px; }
+  .sub{ font-size:1.08rem; margin-bottom:8px; }
+  .toolrow{ display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 4px; }
+  .util{ background:#fff; color:var(--ink); border:2px solid var(--ink); border-radius:999px; padding:9px 14px; font-weight:700; font-size:0.82rem; min-height:44px; }
+  .util[aria-pressed="true"]{ background:var(--ink); color:#fff; box-shadow:0 0 0 3px var(--bg), 0 0 0 6px var(--ink); }
+  .util[aria-pressed="true"]::before{ content:"✓ "; }
+  .util:active{ transform:scale(0.95); background:var(--surface); }
+  .hc .util{ background:#000; color:#fff; border-color:#fff; }
+  .hc .util[aria-pressed="true"]{ background:#ffe600; color:#000; border-color:#ffe600; }
+
+  /* scroll-down hint after mic finishes */
+  .scrollhint{
+    display:flex; align-items:center; gap:14px;
+    background:var(--pink); color:#fff; border-radius:16px;
+    padding:16px 18px; margin:12px 0 4px;
+    font-size:1.15rem; font-weight:800;
+  }
+  .hc .scrollhint{ color:#000; }
+  .scrollhint .arrow{ font-size:2rem; animation:bounce 1s infinite; }
+  @keyframes bounce{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(8px);} }
+
+  /* big reset button */
+  .btn-reset{
+    display:block; width:100%; max-width:640px;
+    background:var(--pink); color:#fff; border:none; border-radius:14px;
+    padding:17px; font-size:1.15rem; font-weight:800; min-height:58px; margin-top:18px;
+  }
+  .btn-reset:active{ background:var(--pink-press); }
+  .hc .btn-reset{ color:#000; }
+
+  /* ---------- mic ---------- */
+  .micbox{
+    background:var(--surface); border-radius:20px; padding:18px;
+    display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:center;
+    margin:14px 0 6px;
+  }
+  .micbtn{
+    background:var(--navbar); color:#fff; border:none; border-radius:50%;
+    width:104px; height:104px; font-size:3rem; flex:none;
+    box-shadow:0 3px 10px rgba(0,0,0,0.2);
+  }
+  .micbtn.listening{ background:var(--pink); animation:pulse 1.2s infinite; }
+  @keyframes pulse{ 0%{transform:scale(1);} 50%{transform:scale(1.07);} 100%{transform:scale(1);} }
+  .mic-instr{ font-size:1.15rem; font-weight:800; }
+  .mic-sub{ font-size:0.98rem; font-weight:400; margin-top:4px; }
+  .transcript{
+    grid-column:1 / -1; background:#fff; border-radius:12px; padding:12px 14px;
+    font-size:1.1rem; min-height:52px; border:2px dashed #b7b2a8;
+  }
+  .hc .transcript{ background:#000; color:#fff; border-color:#fff; }
+  .transcript .you{ font-weight:800; color:var(--brand-cyan); }
+  .hc .transcript .you{ color:#ffe600; }
+  @media (max-width:560px){
+    .micbox{ grid-template-columns:1fr; justify-items:center; text-align:center; }
+  }
+
+  /* ---------- screen 1 ---------- */
+  #screen1 h1{ font-size:2.4rem; }
+  .s1-chips .chip{ font-size:1.2rem; padding:16px 24px; min-height:60px; }
+  .group-label{ font-size:1.25rem; font-weight:800; margin:24px 0 12px; }
+  .btn-done{
+    display:block; width:100%; max-width:640px; background:var(--pink); color:#fff;
+    border:none; border-radius:14px; padding:18px;
+    font-size:1.3rem; font-weight:800; min-height:60px; margin-top:30px;
+  }
+  .btn-done:active{ background:var(--pink-press); }
+  .btn-skip{
+    display:block; width:100%; max-width:640px; background:none; border:3px solid var(--navbar);
+    color:var(--navbar); border-radius:14px; padding:14px;
+    font-size:1.1rem; font-weight:800; min-height:54px; margin-top:12px;
+  }
+  .hc .btn-skip{ border-color:var(--pink); color:var(--pink); }
+
+  .progress{ font-size:0.98rem; font-weight:800; margin-top:14px; }
+  .dots{ display:flex; gap:6px; margin:6px 0 12px; }
+  .dot{ width:11px; height:11px; border-radius:50%; background:#c9c5bd; }
+  .dot.on{ background:var(--navbar); }
+  .hc .dot{ background:#555; } .hc .dot.on{ background:var(--pink); }
+
+  /* ---------- event card ---------- */
+  .card{ display:grid; grid-template-columns:minmax(240px,340px) 1fr; gap:26px; align-items:start; }
+  @media (max-width:720px){ .card{ grid-template-columns:1fr; } }
+  .phone-frame{ position:relative; background:#222; border-radius:26px; padding:10px; box-shadow:0 4px 14px rgba(0,0,0,0.18); }
+  .photo{ border-radius:18px; height:430px; display:flex; align-items:center; justify-content:center; font-size:6rem; color:#fff; user-select:none; }
+  @media (max-width:720px){ .photo{ height:340px; } }
+  .navzone{ position:absolute; top:0; bottom:0; width:42%; background:none; border:none; display:flex; align-items:center; color:#fff; font-size:1.6rem; }
+  .navzone span{ background:rgba(0,0,0,0.55); border:2px solid #fff; border-radius:50%; width:48px; height:48px; display:flex; align-items:center; justify-content:center; }
+  .zone-prev{ left:0; justify-content:flex-start; padding-left:18px; }
+  .zone-next{ right:0; justify-content:flex-end; padding-right:18px; }
+
+  .details{ position:relative; padding-right:8px; }
+  .event-name{ font-size:2rem; font-weight:800; letter-spacing:-0.02em; line-height:1.1; padding-right:88px; }
+  .audio-btn{
+    position:absolute; top:0; right:0;
+    background:#000; color:#fff; border:none; border-radius:50%;
+    width:72px; height:72px; font-size:2rem;
+  }
+  .audio-btn.speaking{ background:var(--pink); }
+  .audio-label{ position:absolute; top:76px; right:0; font-size:0.8rem; font-weight:700; width:72px; text-align:center; }
+  .tagrow{ display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 18px; }
+  .tag{ border-radius:999px; padding:7px 16px; font-size:0.92rem; font-weight:700; color:#fff; }
+  .facts{ font-size:1.05rem; display:grid; gap:4px; margin-bottom:16px; }
+  .facts b{ font-weight:800; }
+  .desc-label{ font-weight:800; font-size:1.05rem; }
+  .desc{ font-size:1.05rem; margin:2px 0 18px; }
+  .reading{ background:var(--hl); border-radius:4px; box-shadow:0 0 0 3px var(--hl); }
+  .btn-register{
+    display:block; width:100%; background:var(--pink); color:#fff;
+    border:none; border-radius:12px; padding:15px;
+    font-size:1.15rem; font-weight:800; min-height:54px;
+  }
+  .btn-register:active{ background:var(--pink-press); }
+
+  /* ---------- filters ---------- */
+  .filters-head{ font-size:1.5rem; font-weight:800; margin:32px 0 4px; }
+  .filters-sub{ font-size:1rem; margin-bottom:12px; }
+  .filters{ display:grid; gap:12px; max-width:640px; }
+  .acc{ border-radius:12px; overflow:hidden; }
+  .acc-head{
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    background:var(--surface); border:none; padding:14px 18px;
+    font-size:1.15rem; font-weight:800; color:var(--ink); border-radius:12px; min-height:54px;
+  }
+  .acc-head .chev{ transition:transform .15s; font-size:1rem; }
+  .acc-head[aria-expanded="true"] .chev{ transform:rotate(180deg); }
+  .acc-body{ padding:14px 6px 6px; }
+  .chips{ display:flex; flex-wrap:wrap; gap:10px; }
+  .chip{
+    display:inline-flex; align-items:center; gap:7px;
+    border:none; border-radius:999px; padding:11px 18px;
+    font-size:0.98rem; font-weight:700; color:#fff;
+    min-height:48px; opacity:0.55;
+    transition:opacity .12s, transform .12s;
+  }
+  .chip[aria-pressed="true"]{ opacity:1; transform:scale(1.04); box-shadow:0 0 0 3px var(--bg), 0 0 0 6px var(--ink); }
+  .chip .em{ font-size:1.05rem; }
+  .btn-clear{ background:none; border:none; color:var(--pink); font-weight:800; font-size:0.95rem; padding:10px 4px; min-height:44px; text-decoration:underline; }
+
+  .list-events{ list-style:none; padding:0; display:grid; gap:14px; max-width:640px; }
+  .list-events li{ background:var(--surface); border-radius:var(--radius); padding:16px; }
+  .list-events h3{ font-size:1.2rem; margin-bottom:6px; }
+  .list-events a{ color:var(--pink); font-weight:800; font-size:1.02rem; }
+
+  .empty{ text-align:center; padding:40px 16px; max-width:520px; margin:0 auto; }
+  .empty .big{ font-size:3rem; }
+  .empty .btn-register{ margin-top:16px; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="navbar" aria-label="Site">
+    <ul class="navlinks">
+      <li><a href="#">Home</a></li><li><a href="#">About Us</a></li><li><a href="#">What We Do</a></li>
+      <li><a href="#">How You Can Help</a></li><li><a href="#">Contact Us</a></li><li><a href="#">News</a></li>
+    </ul>
+    <div class="socials" aria-hidden="true"><a href="#">f</a><a href="#">◎</a><a href="#">▶</a><a href="#">in</a><a href="#">🔍</a></div>
+  </nav>
+  <div class="masthead">
+    <a class="logo" href="#" aria-label="KW Habilitation home">
+      <img src="https://kwhab.ca/wp-content/uploads/2022/01/kwhab-logo.png" alt="KW Habilitation"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <span class="logo-fallback"><span aria-hidden="true">🧍‍♀️✨</span><span class="logo-txt">KWhabilitation</span></span>
+    </a>
+  </div>
+</header>
+
+<!-- ============ SCREEN 1 ============ -->
+<main class="page" id="screen1">
+  <h1>What do you like?</h1>
+  <p class="sub">Tap the buttons for things you enjoy. You can pick more than one.</p>
+
+  <div class="micbox">
+    <button class="micbtn" id="micBtn1" aria-label="Press to speak. Tell us what you are looking for.">🎤</button>
+    <div>
+      <p class="mic-instr">Press the microphone and say what you want.</p>
+      <p class="mic-sub">For example: "free music events" or "sports for youth".</p>
+    </div>
+    <div class="transcript" id="transcript1" aria-live="polite">Your words will show up here.</div>
+  </div>
+
+  <div class="scrollhint" id="scrollHint" hidden>
+    <span class="arrow" aria-hidden="true">⬇</span>
+    <span>Scroll down to check your filters, then press "Done".</span>
+  </div>
+
+  <h2 class="group-label" id="s1-lbl-int">Interests</h2>
+  <div class="chips s1-chips" role="group" aria-labelledby="s1-lbl-int" id="s1-interests"></div>
+
+  <h2 class="group-label" id="s1-lbl-det">Event Type</h2>
+  <div class="chips s1-chips" role="group" aria-labelledby="s1-lbl-det" id="s1-details"></div>
+
+  <button class="btn-done" id="doneBtn">Done — show my events</button>
+  <button class="btn-skip" id="skipBtn">Skip — show all events</button>
+</main>
+
+<!-- ============ SCREEN 2 ============ -->
+<main class="page" id="screen2" hidden>
+  <h1>Events For You</h1>
+  <p class="sub">Press on the categories that you're interested in.<br>Events shown are for the upcoming month.</p>
+
+  <div class="toolrow">
+    <button class="util" id="viewToggle" aria-pressed="false">List view</button>
+    <button class="util" id="hcToggle" aria-pressed="false">High contrast</button>
+    <button class="util" id="backBtn">Start over</button>
+  </div>
+
+  <p class="progress" id="progress" aria-hidden="true"></p>
+  <div class="dots" id="dots" aria-hidden="true"></div>
+  <div aria-live="polite" class="visually-hidden" id="liveRegion"></div>
+
+  <div id="storyView"></div>
+  <div id="listView" hidden></div>
+
+  <h2 class="filters-head">Re-adjust filters</h2>
+  <p class="filters-sub">Tap to turn filters on or off. The events above will change right away.</p>
+
+  <div class="micbox">
+    <button class="micbtn" id="micBtn2" aria-label="Press to speak. Tell us what you are looking for.">🎤</button>
+    <div>
+      <p class="mic-instr">Press the microphone and say what you want.</p>
+      <p class="mic-sub">For example: "free food events". Your filters will change to match.</p>
+    </div>
+    <div class="transcript" id="transcript2" aria-live="polite">Your words will show up here.</div>
+  </div>
+
+  <section class="filters" aria-label="Filters">
+    <div class="acc">
+      <button class="acc-head" aria-expanded="true" aria-controls="body-type">Event Type <span class="chev" aria-hidden="true">▼</span></button>
+      <div class="acc-body" id="body-type"><div class="chips" id="s2-details"></div></div>
+    </div>
+    <div class="acc">
+      <button class="acc-head" aria-expanded="true" aria-controls="body-int">Interests <span class="chev" aria-hidden="true">▼</span></button>
+      <div class="acc-body" id="body-int"><div class="chips" id="s2-interests"></div></div>
+    </div>
+    <div class="acc">
+      <button class="acc-head" aria-expanded="false" aria-controls="body-org">Organization <span class="chev" aria-hidden="true">▼</span></button>
+      <div class="acc-body" id="body-org" hidden><div class="chips" id="s2-orgs"></div></div>
+    </div>
+    <button class="btn-reset" id="resetBtn">Start fresh — clear all filters and pick again</button>
+  </section>
+</main>
+
+<script>
+/* ---------------- data ---------------- */
+const CATS = {
+  arts:   {label:"Arts",   em:"🎨", color:"var(--chip-arts)",   grad:"linear-gradient(135deg,#7c3aed,#a855f7)"},
+  food:   {label:"Food",   em:"🍎", color:"var(--chip-food)",   grad:"linear-gradient(135deg,#2f7d32,#66bb6a)"},
+  music:  {label:"Music",  em:"🎵", color:"var(--chip-music)",  grad:"linear-gradient(135deg,#0f766e,#2dd4bf)"},
+  games:  {label:"Games",  em:"🎲", color:"var(--chip-games)",  grad:"linear-gradient(135deg,#b45309,#f59e0b)"},
+  sports: {label:"Sports", em:"🏀", color:"var(--chip-sports)", grad:"linear-gradient(135deg,#1d4ed8,#3b82f6)"},
+  other:  {label:"Other",  em:"⭐", color:"var(--chip-other)",  grad:"linear-gradient(135deg,#57534e,#78716c)"}
+};
+const ORGS = ["KW Habilitation","DSO (Developmental Services Ontario)","Extend-A-Family","Independent Living Waterloo Region","Sunbeam","Our Studio","Waterloo Region Family Network"];
+const DETAILS = [
+  {id:"free", label:"Free"}, {id:"paid", label:"Paid"},
+  {id:"youth", label:"Youth"},
+  {id:"virtual", label:"Virtual"}, {id:"inperson", label:"In-person"}
+];
+const EVENTS = [
+  {name:"Community Cooking Class", cat:"food", org:"KW Habilitation", cost:"free", mode:"inperson", youth:false,
+   date:"Saturday July 18th, 2026", time:"1:00pm - 3:00pm", loc:"99 Ottawa St. South",
+   desc:"Cook a simple meal together. All skill levels welcome. We eat what we make!"},
+  {name:"Paint and Chat Drop-In", cat:"arts", org:"Our Studio", cost:"free", mode:"inperson", youth:false,
+   date:"Tuesday July 21st, 2026", time:"10:00am - 12:00pm", loc:"44 Gaukel St.",
+   desc:"Drop in and paint. All supplies are here for you. No experience needed."},
+  {name:"Youth Game Night", cat:"games", org:"Extend-A-Family", cost:"free", mode:"inperson", youth:true,
+   date:"Friday July 24th, 2026", time:"6:00pm - 8:00pm", loc:"91 Moore Ave.",
+   desc:"Board games, video games, and pizza for youth ages 12 to 18."},
+  {name:"Music Jam Circle", cat:"music", org:"KW Habilitation", cost:"free", mode:"inperson", youth:false,
+   date:"Saturday July 25th, 2026", time:"1:00pm - 3:00pm", loc:"200 University St. West",
+   desc:"Bring an instrument or use ours. Sing, drum, and play together."},
+  {name:"Online Art Club", cat:"arts", org:"Waterloo Region Family Network", cost:"free", mode:"virtual", youth:true,
+   date:"Wednesday July 22nd, 2026", time:"4:00pm - 5:00pm", loc:"On Zoom — link after you register",
+   desc:"Draw along from home. A friendly helper shows you step by step."},
+  {name:"Farm Volunteer Morning", cat:"other", org:"KW Habilitation", cost:"free", mode:"inperson", youth:false,
+   date:"Thursday July 23rd, 2026", time:"9:00am - 11:30am", loc:"KW Hab Farm, Wilmot",
+   desc:"Help plant and pick vegetables. The food goes to our community."},
+  {name:"Adapted Basketball", cat:"sports", org:"Independent Living Waterloo Region", cost:"paid", mode:"inperson", youth:false,
+   date:"Monday July 27th, 2026", time:"6:30pm - 7:30pm", loc:"Waterloo Rec Complex",
+   desc:"Basketball for every body. Chairs and supports available. $5 each week."},
+  {name:"Family Swim Meetup", cat:"sports", org:"Sunbeam", cost:"paid", mode:"inperson", youth:true,
+   date:"Sunday July 26th, 2026", time:"2:00pm - 4:00pm", loc:"Cameron Heights Pool",
+   desc:"A calm, quiet swim time for families. $4 per person."},
+  {name:"Cooking on a Budget (Online)", cat:"food", org:"DSO (Developmental Services Ontario)", cost:"free", mode:"virtual", youth:false,
+   date:"Tuesday July 28th, 2026", time:"11:00am - 12:00pm", loc:"On Zoom — link after you register",
+   desc:"Learn easy, cheap meals you can make at home."},
+  {name:"Karaoke Afternoon", cat:"music", org:"Extend-A-Family", cost:"free", mode:"inperson", youth:false,
+   date:"Wednesday July 29th, 2026", time:"2:00pm - 4:00pm", loc:"91 Moore Ave.",
+   desc:"Sing your favourite songs with friends. Snacks included."}
+];
+
+/* ---------------- state ---------------- */
+const state = { interests:new Set(), details:new Set(), orgs:new Set(), idx:0, list:false };
+const chipRegistry = []; // {group, key, label, el}
+
+/* ---------------- chip factory (state-synced across screens) ---------------- */
+function addChip(container, group, key, label, em, color, big){
+  const b = document.createElement("button");
+  b.className = "chip";
+  b.style.background = color;
+  b.setAttribute("aria-pressed","false");
+  if(em){
+    const s = document.createElement("span");
+    s.className = "em"; s.textContent = em; s.setAttribute("aria-hidden","true");
+    b.appendChild(s);
+  }
+  b.appendChild(document.createTextNode(label));
+  b.addEventListener("click", ()=>{
+    const set = state[group];
+    set.has(key) ? set.delete(key) : set.add(key);
+    state.idx = 0;
+    syncChips(); render();
+  });
+  chipRegistry.push({group, key, el:b});
+  container.appendChild(b);
+}
+function syncChips(){
+  chipRegistry.forEach(c=> c.el.setAttribute("aria-pressed", String(state[c.group].has(c.key))));
+}
+function buildChips(prefix, includeOrgs){
+  const intC = document.getElementById(prefix+"-interests");
+  Object.entries(CATS).forEach(([id,c])=> addChip(intC, "interests", id, c.label, c.em, c.color));
+  const detC = document.getElementById(prefix+"-details");
+  DETAILS.forEach(d=> addChip(detC, "details", d.id, d.label, null, "var(--brand-cyan)"));
+  if(includeOrgs){
+    const orgC = document.getElementById(prefix+"-orgs");
+    ORGS.forEach(o=> addChip(orgC, "orgs", o, o, null, "var(--chip-other)"));
+  }
+}
+buildChips("s1", false);
+buildChips("s2", true);
+
+/* ---------------- screen switching ---------------- */
+const s1 = document.getElementById("screen1"), s2 = document.getElementById("screen2");
+document.getElementById("doneBtn").addEventListener("click", ()=> goFeed(false));
+document.getElementById("skipBtn").addEventListener("click", ()=> goFeed(true));
+document.getElementById("backBtn").addEventListener("click", ()=>{
+  stopSpeaking();
+  s2.hidden = true; s1.hidden = false; window.scrollTo(0,0);
+});
+function goFeed(clear){
+  if(clear){ state.interests.clear(); state.details.clear(); state.orgs.clear(); syncChips(); }
+  state.idx = 0;
+  s1.hidden = true; s2.hidden = false; window.scrollTo(0,0);
+  render();
+}
+function clearAllFilters(){
+  state.interests.clear(); state.details.clear(); state.orgs.clear();
+  state.idx = 0; syncChips();
+}
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  clearAllFilters();
+  stopSpeaking();
+  document.getElementById("scrollHint").hidden = true;
+  document.getElementById("transcript1").textContent = "Your words will show up here.";
+  s2.hidden = true; s1.hidden = false; window.scrollTo(0,0);
+});
+function clearFiltersStay(){ clearAllFilters(); render(); }
+
+/* accordions */
+document.querySelectorAll(".acc-head").forEach(h=>{
+  h.addEventListener("click", ()=>{
+    const open = h.getAttribute("aria-expanded")==="true";
+    h.setAttribute("aria-expanded", String(!open));
+    document.getElementById(h.getAttribute("aria-controls")).hidden = open;
+  });
+});
+
+/* ---------------- mic (shared, live transcript, cancels speaker) ---------------- */
+function bindMic(btnId, trId){
+  const btn = document.getElementById(btnId);
+  const tr  = document.getElementById(trId);
+  btn.addEventListener("click", ()=>{
+    stopSpeaking(); /* user speaking stops the reader */
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR){ tr.textContent = "Voice is not available on this device. Tap the buttons instead."; return; }
+    const r = new SR(); r.lang = "en-CA"; r.interimResults = true;
+    btn.classList.add("listening");
+    tr.innerHTML = '<span class="you">Listening…</span>';
+    let finalText = "";
+    r.onresult = e=>{
+      let interim = "";
+      for(let i = e.resultIndex; i < e.results.length; i++){
+        if(e.results[i].isFinal) finalText += e.results[i][0].transcript;
+        else interim += e.results[i][0].transcript;
+      }
+      tr.innerHTML = '<span class="you">You said:</span> ' + escapeHTML(finalText || interim || "…");
+    };
+    r.onend = ()=>{
+      btn.classList.remove("listening");
+      if(finalText.trim()){ applySpeech(finalText.toLowerCase(), tr); }
+      else if(tr.textContent.includes("Listening")){ tr.textContent = "I could not hear that. Try again, or tap the buttons."; }
+    };
+    r.onerror = ()=>{
+      btn.classList.remove("listening");
+      tr.textContent = "I could not hear that. Try again, or tap the buttons.";
+    };
+    r.start();
+  });
+}
+function escapeHTML(s){ const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+function applySpeech(said, tr){
+  const matched = [];
+  const map = {arts:["art","paint","draw"],food:["food","cook","eat"],music:["music","sing","karaoke"],games:["game"],sports:["sport","swim","basketball"],other:["volunteer","farm","other"]};
+  Object.entries(map).forEach(([id,words])=>{
+    if(words.some(w=>said.includes(w))){ state.interests.add(id); matched.push(CATS[id].label); }
+  });
+  [["free","free"],["paid","paid"],["virtual","virtual"],["person","inperson"],["youth","youth"],["kid","youth"]].forEach(([w,id])=>{
+    if(said.includes(w)){ state.details.add(id); matched.push(DETAILS.find(d=>d.id===id).label); }
+  });
+  state.idx = 0; syncChips(); render();
+  tr.innerHTML = '<span class="you">You said:</span> ' + escapeHTML(said) +
+    (matched.length ? '<br><span class="you">Filters turned on:</span> ' + matched.join(", ") : '<br>No matching filters found — try words like "music" or "free".');
+  if(tr.id === "transcript1"){
+    document.getElementById("scrollHint").hidden = false;
+  }
+}
+bindMic("micBtn1","transcript1");
+bindMic("micBtn2","transcript2");
+
+/* ---------------- filtering ---------------- */
+function filteredEvents(){
+  return EVENTS.filter(ev=>{
+    if(state.interests.size && !state.interests.has(ev.cat)) return false;
+    if(state.orgs.size && !state.orgs.has(ev.org)) return false;
+    if(state.details.has("free") && !state.details.has("paid") && ev.cost!=="free") return false;
+    if(state.details.has("paid") && !state.details.has("free") && ev.cost!=="paid") return false;
+    if(state.details.has("inperson") && !state.details.has("virtual") && ev.mode!=="inperson") return false;
+    if(state.details.has("virtual") && !state.details.has("inperson") && ev.mode!=="virtual") return false;
+    if(state.details.has("youth") && !ev.youth) return false;
+    return true;
+  });
+}
+
+/* ---------------- speaker with read-along highlight ---------------- */
+let speakingBtn = null;
+function stopSpeaking(){
+  speechSynthesis.cancel();
+  document.querySelectorAll(".reading").forEach(el=>el.classList.remove("reading"));
+  if(speakingBtn){ speakingBtn.classList.remove("speaking"); speakingBtn = null; }
+}
+function speakEvent(ev, btn){
+  if(speechSynthesis.speaking){ stopSpeaking(); return; } /* press again = stop */
+  const parts = [
+    {id:"spk-name", text: ev.name + "."},
+    {id:"spk-org",  text: "Run by " + ev.org + "."},
+    {id:"spk-date", text: ev.date + "."},
+    {id:"spk-time", text: "From " + ev.time + "."},
+    {id:"spk-loc",  text: "At " + ev.loc + "."},
+    {id:"spk-cost", text: ev.cost==="free" ? "This event is free." : "This event is paid."},
+    {id:"spk-desc", text: ev.desc}
+  ];
+  let full = "", offsets = [];
+  parts.forEach(p=>{ offsets.push({start:full.length, end:full.length + p.text.length, id:p.id}); full += p.text + " "; });
+  const u = new SpeechSynthesisUtterance(full);
+  u.rate = 0.95;
+  function highlight(id){
+    document.querySelectorAll(".reading").forEach(el=>el.classList.remove("reading"));
+    const el = document.getElementById(id);
+    if(el) el.classList.add("reading");
+  }
+  u.onstart = ()=>{ btn.classList.add("speaking"); speakingBtn = btn; highlight("spk-name"); };
+  u.onboundary = e=>{
+    const o = offsets.find(o=> e.charIndex >= o.start && e.charIndex < o.end);
+    if(o) highlight(o.id);
+  };
+  u.onend = stopSpeaking;
+  u.onerror = stopSpeaking;
+  speechSynthesis.speak(u);
+}
+
+/* ---------------- render ---------------- */
+const storyView = document.getElementById("storyView");
+const listView  = document.getElementById("listView");
+const progress  = document.getElementById("progress");
+const dots      = document.getElementById("dots");
+const live      = document.getElementById("liveRegion");
+
+function tagsHTML(ev, withIds){
+  const c = CATS[ev.cat];
+  const orgSpan = withIds ? `<span class="tag" style="background:var(--brand-cyan)" id="spk-org">${ev.org}</span>`
+                          : `<span class="tag" style="background:var(--brand-cyan)">${ev.org}</span>`;
+  return `<div class="tagrow">${orgSpan}
+    <span class="tag" style="background:${c.color}"><span aria-hidden="true">${c.em}</span> ${c.label}</span>
+    ${ev.youth ? '<span class="tag" style="background:var(--chip-games)">Youth</span>' : ""}
+    ${ev.mode==="virtual" ? '<span class="tag" style="background:var(--chip-sports)">Virtual</span>' : ""}
+  </div>`;
+}
+function factsHTML(ev, withIds){
+  const w = (id, txt)=> withIds ? `<span id="${id}">${txt}</span>` : txt;
+  return `<div class="facts">
+    <div><b>Date:</b> ${w("spk-date", ev.date)}</div>
+    <div><b>Time:</b> ${w("spk-time", ev.time)}</div>
+    <div><b>Location:</b> ${w("spk-loc", ev.loc)}</div>
+    <div><b>Cost:</b> ${w("spk-cost", ev.cost==="free" ? "Free" : "Paid")}</div>
+  </div>`;
+}
+
+function render(){
+  stopSpeaking();
+  const evs = filteredEvents();
+  if(!evs.length){
+    storyView.innerHTML = `<div class="empty"><div class="big" aria-hidden="true">🔍</div>
+      <h2>No events match yet</h2><p class="sub">Try fewer filters, or see everything.</p>
+      <button class="btn-register" onclick="clearFiltersStay()">Show all events</button></div>`;
+    listView.innerHTML = ""; progress.textContent=""; dots.innerHTML="";
+    return;
+  }
+  if(state.idx >= evs.length) state.idx = 0;
+  const ev = evs[state.idx], c = CATS[ev.cat];
+
+  progress.textContent = `Event ${state.idx+1} of ${evs.length}`;
+  dots.innerHTML = evs.map((_,i)=>`<span class="dot ${i===state.idx?'on':''}"></span>`).join("");
+
+  storyView.innerHTML = `
+    <article class="card" aria-label="Event ${state.idx+1} of ${evs.length}: ${ev.name}">
+      <div class="phone-frame">
+        <div class="photo" style="background:${c.grad}" role="img" aria-label="${c.label} event photo"><span aria-hidden="true">${c.em}</span></div>
+        <button class="navzone zone-prev" id="prevBtn" aria-label="Previous event"><span aria-hidden="true">←</span></button>
+        <button class="navzone zone-next" id="nextBtn" aria-label="Next event"><span aria-hidden="true">→</span></button>
+      </div>
+      <div class="details">
+        <button class="audio-btn" id="audioBtn" aria-label="Hear this event read aloud. Press again to stop.">🔊</button>
+        <span class="audio-label" aria-hidden="true">Hear it</span>
+        <h2 class="event-name" id="spk-name">${ev.name}</h2>
+        ${tagsHTML(ev, true)}
+        ${factsHTML(ev, true)}
+        <p class="desc-label">Description:</p>
+        <p class="desc" id="spk-desc">${ev.desc}</p>
+        <button class="btn-register" onclick="alert('This opens ${ev.org.replace(/'/g,"\\'")}\\u2019s own registration page.')">Register Here</button>
+      </div>
+    </article>`;
+
+  document.getElementById("prevBtn").addEventListener("click", ()=> step(-1));
+  document.getElementById("nextBtn").addEventListener("click", ()=> step(1));
+  document.getElementById("audioBtn").addEventListener("click", e=> speakEvent(ev, e.currentTarget));
+
+  live.textContent = `Showing event ${state.idx+1} of ${evs.length}: ${ev.name}`;
+
+  listView.innerHTML = `<ul class="list-events">` + evs.map(e2=>{
+    return `<li><h3>${e2.name}</h3>${tagsHTML(e2, false)}${factsHTML(e2, false)}<p class="desc">${e2.desc}</p>
+      <a href="#" onclick="alert('This opens ${e2.org.replace(/'/g,"\\'")}\\u2019s own registration page.');return false;">Register Here</a></li>`;
+  }).join("") + `</ul>`;
+}
+
+function step(d){
+  const n = filteredEvents().length;
+  if(!n) return;
+  state.idx = (state.idx + d + n) % n;
+  render();
+}
+
+/* keyboard + swipe */
+document.addEventListener("keydown", e=>{
+  if(s2.hidden || state.list) return;
+  const t = e.target.tagName;
+  if(t==="INPUT" || t==="TEXTAREA") return;
+  if(e.key==="ArrowLeft") step(-1);
+  if(e.key==="ArrowRight") step(1);
+});
+let tx = null;
+storyView.addEventListener("touchstart", e=>{ tx = e.touches[0].clientX; }, {passive:true});
+storyView.addEventListener("touchend", e=>{
+  if(tx===null) return;
+  const dx = e.changedTouches[0].clientX - tx;
+  if(Math.abs(dx) > 60) step(dx < 0 ? 1 : -1);
+  tx = null;
+}, {passive:true});
+
+/* list toggle */
+document.getElementById("viewToggle").addEventListener("click", e=>{
+  state.list = !state.list;
+  e.target.setAttribute("aria-pressed", String(state.list));
+  e.target.textContent = state.list ? "Story view" : "List view";
+  stopSpeaking();
+  storyView.hidden = state.list; listView.hidden = !state.list;
+  progress.style.display = dots.style.display = state.list ? "none" : "";
+});
+
+/* high contrast */
+document.getElementById("hcToggle").addEventListener("click", e=>{
+  const on = document.body.classList.toggle("hc");
+  e.target.setAttribute("aria-pressed", String(on));
+});
+</script>
+</body>
+</html>
