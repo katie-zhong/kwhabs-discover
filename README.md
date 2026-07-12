@@ -2,7 +2,7 @@
 
 Accessible community events prototype built for Impact-a-thon 2026 (KW Habilitation challenge).
 
-**Live demo:** enable GitHub Pages (Settings → Pages → Deploy from branch → main, root) and it will be served at `https://<username>.github.io/kw-go/`
+**Live demo:** enable GitHub Pages (Repository Settings → Pages → Deploy from branch → main, root) and it will be served at `https://<username>.github.io/kw-go/`
 
 ## What it does
 - **Screen 1:** pick interests by tapping big chips or by voice (live transcript), then "Done" or "Skip"
