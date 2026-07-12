@@ -3,8 +3,8 @@
 Accessible community events prototype built for Impact-a-thon 2026 (KW Habilitation challenge).
 
 ## Team
-- Design by Victoria Feng
-- Product and Claude prototype by Katie Zhong
+- Design by [Victoria Feng](https://github.com/mauveyrosie)
+- Product and Claude prototype by [Katie Zhong](https://github.com/katie-zhong)
 
 **Live demo:** enable GitHub Pages (Repository Settings → Pages → Deploy from branch → main, root) and it will be served at `https://<username>.github.io/kw-go/`
 
